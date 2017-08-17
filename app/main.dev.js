@@ -59,6 +59,11 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
+  if (process.env.NODE_ENV != 'development') {
+    // start API when not development (because development will start a nodemon process)
+    require('./api');
+  }
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
