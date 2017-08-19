@@ -8,22 +8,24 @@ const props = {
   multiple: true,
   showUploadList: false,
   action: '',
-  onChange(info) {
-    const status = info.file.status;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
 };
 
 export default class ResumeUpload extends Component {
   render() {
     props.action = this.props.api;
+    props.onChange = (info) => {
+      const status = info.file.status;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+        this.set
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    };
+
 
     return (
       <div style={{ marginTop: 16, height: 180 }}>

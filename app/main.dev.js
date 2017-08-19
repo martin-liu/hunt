@@ -14,6 +14,7 @@ import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 
 let mainWindow = null;
+let api = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -51,6 +52,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+
+  if (api) {
+    api.close();
+  }
+
 });
 
 
@@ -61,7 +67,7 @@ app.on('ready', async () => {
 
   if (process.env.NODE_ENV != 'development') {
     // start API when not development (because development will start a nodemon process)
-    require('./api');
+    api = require('./api');
   }
 
   mainWindow = new BrowserWindow({
