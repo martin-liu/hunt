@@ -188,6 +188,7 @@
   },
   "dependencies": {
     "antd": "^2.12.6",
+    "axios": "^0.16.2",
     "devtron": "^1.4.0",
     "electron-debug": "^1.2.0",
     "font-awesome": "^4.7.0",
@@ -195,6 +196,8 @@
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
     "koa-router": "^7.2.1",
+    "log4js": "^2.3.3",
+    "natural": "^0.5.4",
     "pdfjs-dist": "^1.9.436",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -206,7 +209,8 @@
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.4.15",
-    "textract": "^2.1.2"
+    "textract": "^2.1.2",
+    "yunodb": "github:blahah/yunodb#streaming"
   },
   "devEngines": {
     "node": ">=7.x",

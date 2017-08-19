@@ -5,12 +5,16 @@ const fs = require('fs');
 const app = new Koa();
 const os = require('os');
 const path = require('path');
+const JSONStream = require('JSONStream');
 
 const util = require('./util');
+const DB = require('./db');
 
 router
-  .get('/', async (ctx) => {
-    ctx.body = {a: 'come on'};
+  .get('/search/:query', async (ctx) => {
+    let stream = await DB.search(ctx.params.query.trim());
+    ctx.set('Content-Type', 'application/json');
+    ctx.body = stream.pipe(JSONStream.stringify());
   })
 // file upload handler
   .post('/resume', koaBody, async (ctx) => {
@@ -31,6 +35,8 @@ router
         })
           .on('error', rj);
       });
+
+      await DB.add({id: file.name, text});
     } catch (e) {
       return ctx.throw(e);
     }
@@ -41,5 +47,12 @@ router
 app.use(router.routes());
 
 // listen
-app.listen(3000);
+let _server = app.listen(3000);
 console.log('listening on port 3000');
+
+module.exports = {
+  close: async () => {
+    _server.close();
+    return await DB.close();
+  }
+};
