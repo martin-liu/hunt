@@ -1,11 +1,15 @@
 // @flow
-import React, { Component } from 'react';
-import Home from '../components/Home';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Home from '../components/Home.react';
+import * as SearchActions from '../actions/search.react';
 
-export default class HomePage extends Component {
-  render() {
-    return (
-      <Home />
-    );
-  }
+function mapStateToProps(state) {
+  return state.search;
 }
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(SearchActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
