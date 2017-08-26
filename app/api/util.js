@@ -65,6 +65,9 @@ module.exports = new class Util {
 
     let complete = 0;
 
+    let getX = (item) => item.transform[4];
+    let getY = (item) => item.transform[5];
+
     PDFJS.getDocument( data ).then( function(pdf) {
 
       var total = pdf.numPages;
@@ -79,10 +82,11 @@ module.exports = new class Util {
               var last_block = null;
               for( var k = 0; k < textContent.items.length; k++ ){
                 var block = textContent.items[k];
-                if( last_block != null && last_block.str[last_block.str.length-1] != ' '){
-                  if( block.x < last_block.x )
-                    page_text += "\r\n";
-                  else if ( last_block.y != block.y && ( last_block.str.match(/^(\s?[a-zA-Z])$|^(.+\s[a-zA-Z])$/) == null ))
+                if( last_block != null // && last_block.str[last_block.str.length-1] != ' '
+                  ){
+                  if( getX(block) < getX(last_block) )
+                    page_text += "\n";
+                  else if ( getY(last_block) != getY(block) && ( last_block.str.match(/^(\s?[a-zA-Z])$|^(.+\s[a-zA-Z])$/) == null ))
                     page_text += ' ';
                 }
                 page_text += block.str;

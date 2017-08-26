@@ -9,12 +9,19 @@ const JSONStream = require('JSONStream');
 
 const util = require('./util');
 const DB = require('./db');
+const Resume = require('./resume');
 
 router
   .get('/search/:query', async (ctx) => {
     let stream = await DB.search(ctx.params.query.trim());
     ctx.set('Content-Type', 'application/json');
     ctx.body = stream.pipe(JSONStream.stringify());
+  })
+  .get('/resume/:id', async (ctx) => {
+    ctx.body = await DB.get(ctx.params.id);
+  })
+  .delete('/resume/:id', async (ctx) => {
+    ctx.body = await DB.delete(ctx.params.id);
   })
 // file upload handler
   .post('/resume', koaBody, async (ctx) => {
@@ -36,7 +43,8 @@ router
           .on('error', rj);
       });
 
-      await DB.add({id: file.name, text});
+      let resume = await Resume.process(text);
+      if (resume && resume.id) await DB.add(resume);
     } catch (e) {
       return ctx.throw(e);
     }

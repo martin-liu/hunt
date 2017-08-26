@@ -5,6 +5,10 @@ import config from '../config/config';
 
 export const ACTION_SEARCH = 'ACTION_SEARCH';
 export const ACTION_SEARCH_RETURN = 'ACTION_SEARCH_RETURN';
+export const ACTION_SHOW_MODAL = 'ACTION_SHOW_MODAL';
+export const ACTION_HIDE_MODAL = 'ACTION_HIDE_MODAL';
+
+let preSource;
 
 export function search(query: string) {
   return (dispatch: (data: any) => void) => {
@@ -18,15 +22,40 @@ export function search(query: string) {
     });
 
     let api = config.api + 'search/';
-    axios.get(api + query)
+
+    if (preSource) {
+      /* cancel previous request */
+      preSource.cancel('Cancel previous search request when new request coming');
+    }
+
+    preSource = axios.CancelToken.source();
+
+    axios.get(api + query, {cancelToken: preSource.token})
          .then(ret => {
            /* search return */
-           setTimeout( () => {
            dispatch({
              type: ACTION_SEARCH_RETURN,
              data: ret.data
            });
-           }, 2000);
+         }).catch(e => {
+           if (axios.isCancel(e)) {
+             console.log('Request canceled: ', e.message);
+           } else {
+             throw e;
+           }
          });
+  };
+}
+
+export function showModal(data) {
+  return {
+    type: ACTION_SHOW_MODAL,
+    data
+  }
+}
+
+export function hideModal() {
+  return {
+    type: ACTION_HIDE_MODAL
   };
 }
