@@ -9,17 +9,31 @@ import { dependencies as externals } from './app/package.json';
 export default {
   externals: Object.keys(externals || {}),
 
+  resolveLoader: {
+    alias: {
+      'remove-hashbag-loader': path.join(__dirname, 'remove-hashbag-loader')
+    }
+  },
+
   module: {
-    rules: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          cacheDirectory: true
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true
+          }
+        }
+      },
+      {
+        test: /node_modules\/JSONStream\/index.js$/,
+        use: {
+          loader: 'remove-hashbag-loader'
         }
       }
-    }]
+    ]
   },
 
   output: {
