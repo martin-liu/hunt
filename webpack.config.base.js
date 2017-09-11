@@ -9,12 +9,6 @@ import { dependencies as externals } from './app/package.json';
 export default {
   externals: Object.keys(externals || {}),
 
-  resolveLoader: {
-    alias: {
-      'remove-hashbag-loader': path.join(__dirname, 'remove-hashbag-loader')
-    }
-  },
-
   module: {
     rules: [
       {
@@ -25,12 +19,6 @@ export default {
           options: {
             cacheDirectory: true
           }
-        }
-      },
-      {
-        test: /node_modules\/JSONStream\/index.js$/,
-        use: {
-          loader: 'remove-hashbag-loader'
         }
       }
     ]

@@ -3,6 +3,7 @@ const yuno = require('yunodb');
 const through = require('through2');
 const pumpify = require('pumpify');
 const _ = require('lodash');
+const logger = require('electron-log');
 
 const dbopts = {
   location: `${os.homedir()}/.hunt/db`,
@@ -119,7 +120,7 @@ module.exports = {
 
   close: async () => {
     let db = await getDB();
-    console.log('closing yunodb...');
-    db.close();
+    logger.info('closing yunodb...');
+    db.close(() => logger.info('closed yunodb!'));
   }
 };

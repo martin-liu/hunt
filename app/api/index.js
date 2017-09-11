@@ -11,6 +11,10 @@ const util = require('./util');
 const DB = require('./db');
 const Resume = require('./resume');
 
+const logger = require('electron-log');
+
+logger.info("starting koa...");
+
 router
   .get('/search/:query', async (ctx) => {
     let stream = await DB.search(ctx.params.query.trim());
@@ -30,7 +34,7 @@ router
     const reader = fs.createReadStream(file.path);
     const stream = fs.createWriteStream(path.join(os.tmpdir(), Math.random().toString()));
     reader.pipe(stream);
-    console.log('uploading %s -> %s', file.name, stream.path);
+    logger.info('uploading %s -> %s', file.name, stream.path);
 
     let text;
     try {
@@ -56,7 +60,7 @@ app.use(router.routes());
 
 // listen
 let _server = app.listen(3000);
-console.log('listening on port 3000');
+logger.info("started koa on port 3000!");
 
 module.exports = {
   close: async () => {
