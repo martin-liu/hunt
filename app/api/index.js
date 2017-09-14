@@ -12,6 +12,7 @@ const DB = require('./db');
 const Resume = require('./resume');
 
 const logger = require('electron-log');
+logger.transports.file.level = "info";
 
 logger.info("starting koa...");
 
