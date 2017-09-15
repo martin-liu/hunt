@@ -10,15 +10,12 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './webpack.config.base';
 import CheckNodeEnv from './internals/scripts/CheckNodeEnv';
 
-import nodeExternals from 'webpack-node-externals';
-
 CheckNodeEnv('production');
 
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
 
   target: 'electron-main',
-  externals: [nodeExternals()],
 
   entry: {
     'main' :'./app/main.dev'
@@ -34,7 +31,11 @@ export default merge.smart(baseConfig, {
     /**
      * Babli is an ES6+ aware minifier based on the Babel toolchain (beta)
      */
-    new BabiliPlugin(),
+    new BabiliPlugin({
+      "mangle": {
+        "exclude": ["require"]
+      }
+    }),
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',

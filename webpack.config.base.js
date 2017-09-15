@@ -7,7 +7,14 @@ import webpack from 'webpack';
 import { dependencies as externals } from './app/package.json';
 
 export default {
-  externals: Object.keys(externals || {}),
+  // add formidable since it cannot work well with webpack
+  externals: Object.keys(externals || {}).concat(['formidable']),
+
+  resolveLoader: {
+    alias: {
+      'remove-hashbag-loader': path.join(__dirname, 'remove-hashbag-loader')
+    }
+  },
 
   module: {
     rules: [
@@ -19,6 +26,12 @@ export default {
           options: {
             cacheDirectory: true
           }
+        }
+      },
+      {
+        test: /node_modules\/JSONStream\/index.js$/,
+        use: {
+          loader: 'remove-hashbag-loader'
         }
       }
     ]
