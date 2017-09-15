@@ -1,3 +1,8 @@
+# 0.1.2 (2017-09-15)
+
+#### Additions
+- Show current version in right top corner
+
 # 0.1.1 (2017-09-15)
 
 #### Additions

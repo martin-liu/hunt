@@ -7,6 +7,8 @@ const { Header, Footer, Sider, Content } = Layout;
 import enUS from 'antd/lib/locale-provider/en_US';
 import HMenu from '../components/Menu.react';
 
+import { version } from '../package.json';
+
 export default class App extends Component {
   props: {
     children: Children
@@ -24,6 +26,9 @@ export default class App extends Component {
               {this.props.children}
             </Col>
             <Col span={4}>
+              <div style={{position: 'absolute', top: '5px', right: '10px', color: '#fff'}}>
+                v {version}
+              </div>
               <BackTop />
             </Col>
           </Row>
