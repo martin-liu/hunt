@@ -1,7 +1,7 @@
 {
   "name": "hunt",
   "productName": "Hunt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hunt App",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -16,7 +16,7 @@
     "lint-styles": "stylelint app/*.css app/components/*.css --syntax scss",
     "lint-styles-fix": "stylefmt -r app/*.css app/components/*.css",
     "package": "npm run build && build --publish never",
-    "package:publish": "npm run build && build --publish always",
+    "package:publish": "build --publish always",
     "package-all": "npm run build && build -mwl",
     "package-linux": "npm run build && build --linux",
     "package-win": "npm run build && build --win --x64",
