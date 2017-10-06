@@ -16,7 +16,7 @@ module.exports = new class Resume {
     }
 
     if (data.contact) {
-      data.id = data.contact.email || (data.contact.name + data.contact.phone);
+      data.id = data.contact.email || (data.contact.name + (data.contact.phone || ''));
     }
 
     return data;

@@ -22,6 +22,11 @@ router
     ctx.set('Content-Type', 'application/json');
     ctx.body = stream.pipe(JSONStream.stringify());
   })
+  .get('/resume/latest/:time', async (ctx) => {
+    let stream = await DB.latest(ctx.params.time);
+    ctx.set('Content-Type', 'application/json');
+    ctx.body = stream.pipe(JSONStream.stringify());
+  })
   .get('/resume/:id', async (ctx) => {
     ctx.body = await DB.get(ctx.params.id);
   })
@@ -49,7 +54,10 @@ router
       });
 
       let resume = await Resume.process(text);
-      if (resume && resume.id) await DB.add(resume);
+      if (resume && resume.id) {
+        resume.time = new Date().getTime();
+        await DB.add(resume);
+      }
     } catch (e) {
       return ctx.throw(e);
     }

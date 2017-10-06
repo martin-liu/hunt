@@ -19,7 +19,6 @@ export const routes = [
     icon: 'upload',
     component: UploadPage
   },
-
 ];
 
 let routeItems = routes.map(d => <Route key={d.path} path={d.path} component={d.component} />).reverse();

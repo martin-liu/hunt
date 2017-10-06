@@ -8,12 +8,12 @@ const logger = require('electron-log');
 const dbopts = {
   location: `${os.homedir()}/.hunt/db`,
   keyField: 'id',
-  indexMap: ['raw']
+  indexMap: ['raw', 'time']
 };
 
 let db;
 
-function processQuery(query) {
+function processQueryString(query) {
   let quoted = /["']([^"']+?)['"]/gmi;
   let matchs = (query.match(quoted) || []).map(d => d.replace(/["']/g, ''));
 
@@ -25,14 +25,12 @@ function processQuery(query) {
   return queries;
 }
 
-function customizeSearch(query, opts) {
-  let self = db;
-
+function processQuery(query, opts) {
   let searchOpts = _.defaults(opts, {});
 
-  let queries = processQuery(query);
+  let queries = processQueryString(query);
 
-  let naturalizedQueries = queries.map(d => self.preprocessor.naturalize(d)).filter(d => d && d.length);
+  let naturalizedQueries = queries.map(d => db.preprocessor.naturalize(d)).filter(d => d && d.length);
 
   let q = {
     query: naturalizedQueries.map(d => ({
@@ -40,8 +38,20 @@ function customizeSearch(query, opts) {
         '*': d
       }
     })),
-    pageSize: searchOpts.limit || 10000
+    pageSize: searchOpts.limit || 1000
   };
+
+  return {q, opts: searchOpts};
+}
+
+function customizeSearch(query, searchOpts, processQueryFunc) {
+  let self = db;
+
+  if (!processQueryFunc || !_.isFunction(processQueryFunc)) {
+    processQueryFunc = processQuery;
+  }
+
+  let { q, opts } = processQueryFunc(query, searchOpts);
 
   let lookup = through.obj(function (data, enc, cb) {
     if (typeof data === 'string') data = JSON.parse(data.toString('utf8'));
@@ -53,7 +63,7 @@ function customizeSearch(query, opts) {
     });
   });
 
-  return pumpify.obj(self.index.search(q, searchOpts), lookup);
+  return pumpify.obj(self.index.search(q, opts), lookup);
 }
 
 async function getDB() {
@@ -116,6 +126,28 @@ module.exports = {
   search: async (query, limit) => {
     let db = await getDB();
     return db.search(query, {limit: limit || 1000});
+  },
+
+  latest: async (time, limit) => {
+    let db = await getDB();
+    return db.search(time, {}, (time, opts) => {
+      return {
+        q: {
+          query: {
+            AND: {
+              time: [{
+                gte: time,
+                lte: new Date().getTime()
+              }]
+            }
+          }
+        },
+        opts: {
+          ...opts,
+          limit: limit || 1000
+        }
+      };
+    });
   },
 
   close: async () => {
